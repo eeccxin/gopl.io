@@ -23,8 +23,9 @@ func main() {
 		go fetch(url, ch) // start a goroutine
 	}
 	for range os.Args[1:] {
-		fmt.Println(<-ch) // receive from channel ch
+		fmt.Println(<-ch) // receive from channel ch,输出到stdout
 	}
+
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
@@ -42,7 +43,7 @@ func fetch(url string, ch chan<- string) {
 		ch <- fmt.Sprintf("while reading %s: %v", url, err)
 		return
 	}
-	secs := time.Since(start).Seconds()
+	secs := time.Since(start).Seconds() //time.Since(time.Time)从某一时刻开始到现在的时间
 	ch <- fmt.Sprintf("%.2fs  %7d  %s", secs, nbytes, url)
 }
 
