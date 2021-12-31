@@ -14,6 +14,7 @@ import (
 	"os"
 )
 
+//dup3
 func main() {
 	counts := make(map[string]int)
 	files := os.Args[1:]
@@ -26,7 +27,14 @@ func main() {
 				fmt.Fprintf(os.Stderr, "dup2: %v\n", err)
 				continue
 			}
-			countLines(f, counts)
+			//原本
+			// countLines(f, counts)
+			//题目1.4
+			isDup := countLines_1(f, counts)
+			if isDup {
+				fmt.Printf("文件%s出现重复行\n", arg)
+			}
+
 			f.Close()
 		}
 	}
@@ -42,6 +50,20 @@ func countLines(f *os.File, counts map[string]int) {
 	for input.Scan() {
 		counts[input.Text()]++
 	}
+	// NOTE: ignoring potential errors from input.Err()
+}
+
+//题目1.4  修改 dup2 ，出现重复的行时打印文件名称
+func countLines_1(f *os.File, counts map[string]int) (isDup bool) {
+	input := bufio.NewScanner(f)
+	for input.Scan() {
+		counts[input.Text()]++
+		n := counts[input.Text()]
+		if n > 1 {
+			isDup = true
+		}
+	}
+	return isDup
 	// NOTE: ignoring potential errors from input.Err()
 }
 
